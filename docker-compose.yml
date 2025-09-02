@@ -1,0 +1,70 @@
+# Docker Compose for MUZAM
+# ========================
+
+version: '3.8'
+
+services:
+  muzam:
+    build: .
+    container_name: muzam-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./audio_files:/app/audio_files:ro
+      - ./config.toml:/app/config.toml:ro
+    environment:
+      - MUZAM_CONFIG_PATH=/app/config.toml
+      - MUZAM_DB_PATH=/app/data/muzam.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: PostgreSQL for production database
+  postgres:
+    image: postgres:15-alpine
+    container_name: muzam-postgres
+    environment:
+      POSTGRES_DB: muzam
+      POSTGRES_USER: muzam
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-muzam_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: muzam-redis
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: muzam-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - muzam
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: muzam-network

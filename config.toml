@@ -1,0 +1,172 @@
+# MUZAM Configuration File
+# ========================
+
+# Database Configuration
+[database]
+# Local SQLite database path
+db_path = "muzam.db"
+
+# Use only local database (no cloud sync)
+local_only = true
+
+# Cloud database configuration (optional)
+[database.cloud]
+enabled = false
+provider = "postgresql"  # postgresql, mongodb, mysql
+host = "localhost"
+port = 5432
+username = ""
+password = ""
+database_name = "muzam"
+
+# Audio Processing Configuration
+[audio]
+# Default sample rate for processing
+sample_rate = 22050
+
+# Supported audio formats
+supported_formats = [".mp3", ".wav", ".flac", ".m4a", ".ogg", ".aac"]
+
+# Audio processing settings
+normalize_audio = true
+apply_noise_reduction = false
+trim_silence = true
+
+# Fingerprinting Configuration
+[fingerprinting]
+# Primary fingerprinting algorithm
+algorithm = "hybrid"  # hybrid, chromaprint, spectral, mfcc
+
+# Fingerprint generation parameters
+hop_length = 512
+n_fft = 2048
+window_size = 4096
+overlap = 0.5
+
+# Minimum fingerprint quality threshold
+min_confidence = 0.7
+
+# Recognition Configuration
+[recognition]
+# Minimum buffer size for streaming recognition (seconds)
+min_buffer_size = 5
+
+# Maximum recognition time (seconds)
+max_recognition_time = 30
+
+# Minimum confidence threshold for matches
+min_match_confidence = 0.7
+
+# Maximum number of results to return
+max_results = 10
+
+# Machine Learning Configuration
+[ml]
+# Enable ML enhancement
+enabled = true
+
+# ML model paths
+model_path = "models/"
+
+# Training parameters
+batch_size = 32
+learning_rate = 0.001
+epochs = 100
+
+# Auto-tuning settings
+auto_tune = true
+performance_threshold = 0.8
+
+# Web Server Configuration
+[web]
+# Server host and port
+host = "0.0.0.0"
+port = 8000
+
+# CORS settings
+cors_origins = ["*"]
+
+# Maximum file upload size (MB)
+max_upload_size = 50
+
+# Enable debug mode
+debug = false
+
+# API Configuration
+[api]
+# Rate limiting
+rate_limit_requests = 100
+rate_limit_window = 60  # seconds
+
+# API key requirement
+require_api_key = false
+
+# Logging Configuration
+[logging]
+# Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+level = "INFO"
+
+# Log file path (empty for console only)
+file_path = ""
+
+# Log format
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Performance Configuration
+[performance]
+# Enable parallel processing
+parallel_processing = true
+
+# Number of worker threads
+num_workers = 4
+
+# Cache settings
+enable_cache = true
+cache_size = 1000
+
+# Memory usage limits
+max_memory_usage = "1GB"
+
+# Security Configuration
+[security]
+# Enable HTTPS (requires SSL certificates)
+enable_https = false
+
+# SSL certificate paths
+ssl_cert_path = ""
+ssl_key_path = ""
+
+# Authentication settings
+enable_auth = false
+secret_key = ""
+
+# Features Configuration
+[features]
+# Enable real-time recognition
+real_time_recognition = true
+
+# Enable batch processing
+batch_processing = true
+
+# Enable web interface
+web_interface = true
+
+# Enable CLI
+cli_interface = true
+
+# Enable API
+api_interface = true
+
+# Advanced Configuration
+[advanced]
+# Custom fingerprint algorithms
+custom_algorithms = []
+
+# Plugin directories
+plugin_directories = ["plugins/"]
+
+# Experimental features
+experimental_features = false
+
+# Development mode
+development_mode = false
