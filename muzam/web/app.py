@@ -49,7 +49,7 @@ app = FastAPI(
     description="Open Source Audio Recognition - Better than Shazam",
     version="1.0.0",
     docs_url="/api/docs",
-    redoc_url="/api/redoc"
+    redoc_url="/api/redoc",
 )
 
 # CORS middleware for web app
@@ -222,31 +222,31 @@ async def home():
 async def recognize_audio_file(audio_file: UploadFile = File(...)):
     """
     Recognize song from uploaded audio file
-    
+
     Args:
         audio_file: Uploaded audio file
-        
+
     Returns:
         Recognition result with song information
     """
     start_time = asyncio.get_event_loop().time()
-    
+
     try:
         # Validate file type
-        if not audio_file.content_type.startswith('audio/'):
+        if not audio_file.content_type.startswith("audio/"):
             raise HTTPException(status_code=400, detail="File must be an audio file")
-        
+
         # Save uploaded file temporarily
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.tmp') as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".tmp") as temp_file:
             content = await audio_file.read()
             temp_file.write(content)
             temp_file_path = temp_file.name
-        
+
         try:
             # Recognize the audio
             result = recognizer.identify_file(temp_file_path)
             processing_time = asyncio.get_event_loop().time() - start_time
-            
+
             if result:
                 return RecognitionResponse(
                     success=True,
@@ -257,29 +257,27 @@ async def recognize_audio_file(audio_file: UploadFile = File(...)):
                         "year": result.year,
                         "confidence": result.confidence,
                         "match_time": result.match_time,
-                        "fingerprint_matches": result.fingerprint_matches
+                        "fingerprint_matches": result.fingerprint_matches,
                     },
-                    processing_time=processing_time
+                    processing_time=processing_time,
                 )
             else:
                 return RecognitionResponse(
                     success=False,
                     error="No matching song found",
-                    processing_time=processing_time
+                    processing_time=processing_time,
                 )
-                
+
         finally:
             # Clean up temporary file
             if os.path.exists(temp_file_path):
                 os.unlink(temp_file_path)
-                
+
     except Exception as e:
         logger.error(f"Error recognizing audio file: {e}")
         processing_time = asyncio.get_event_loop().time() - start_time
         return RecognitionResponse(
-            success=False,
-            error=str(e),
-            processing_time=processing_time
+            success=False, error=str(e), processing_time=processing_time
         )
 
 
@@ -287,23 +285,23 @@ async def recognize_audio_file(audio_file: UploadFile = File(...)):
 async def recognize_from_microphone(duration: int = 10):
     """
     Recognize song from microphone recording
-    
+
     Args:
         duration: Recording duration in seconds (max 30)
-        
+
     Returns:
         Recognition result
     """
     start_time = asyncio.get_event_loop().time()
-    
+
     try:
         # Limit duration for server resources
         duration = min(duration, 30)
-        
+
         # Record from microphone
         audio_data = recognizer.listen_and_identify(duration)
         processing_time = asyncio.get_event_loop().time() - start_time
-        
+
         if audio_data:
             return RecognitionResponse(
                 success=True,
@@ -314,24 +312,22 @@ async def recognize_from_microphone(duration: int = 10):
                     "year": audio_data.year,
                     "confidence": audio_data.confidence,
                     "match_time": audio_data.match_time,
-                    "fingerprint_matches": audio_data.fingerprint_matches
+                    "fingerprint_matches": audio_data.fingerprint_matches,
                 },
-                processing_time=processing_time
+                processing_time=processing_time,
             )
         else:
             return RecognitionResponse(
                 success=False,
                 error="No matching song found",
-                processing_time=processing_time
+                processing_time=processing_time,
             )
-            
+
     except Exception as e:
         logger.error(f"Error with microphone recognition: {e}")
         processing_time = asyncio.get_event_loop().time() - start_time
         return RecognitionResponse(
-            success=False,
-            error=str(e),
-            processing_time=processing_time
+            success=False, error=str(e), processing_time=processing_time
         )
 
 
@@ -342,7 +338,7 @@ async def health_check():
         "status": "healthy",
         "service": "MUZAM GhostKitty Audio Recognition",
         "version": "1.0.0",
-        "timestamp": "2025-09-02"
+        "timestamp": "2025-09-02",
     }
 
 
@@ -354,7 +350,7 @@ async def get_database_stats():
         return DatabaseStats(
             total_songs=stats.get("songs", 0),
             total_fingerprints=stats.get("fingerprints", 0),
-            total_recognitions=stats.get("recognitions", 0)
+            total_recognitions=stats.get("recognitions", 0),
         )
     except Exception as e:
         logger.error(f"Error getting stats: {e}")
@@ -365,28 +361,30 @@ async def get_database_stats():
 async def add_song_to_database(song_info: SongInfo, audio_file: UploadFile = File(...)):
     """
     Add a new song to the database
-    
+
     Args:
         song_info: Song metadata
         audio_file: Audio file to fingerprint
-        
+
     Returns:
         Success status and song ID
     """
     try:
         # Save uploaded file temporarily
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.tmp') as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".tmp") as temp_file:
             content = await audio_file.read()
             temp_file.write(content)
             temp_file_path = temp_file.name
-        
+
         try:
             # Load and process audio
             audio_data, sample_rate = load_audio(temp_file_path)
-            
+
             # Generate fingerprint
-            fingerprint = recognizer.fingerprint_generator.generate(audio_data, sample_rate)
-            
+            fingerprint = recognizer.fingerprint_generator.generate(
+                audio_data, sample_rate
+            )
+
             # Create song object
             song = Song(
                 title=song_info.title,
@@ -394,19 +392,23 @@ async def add_song_to_database(song_info: SongInfo, audio_file: UploadFile = Fil
                 album=song_info.album,
                 year=song_info.year,
                 duration=len(audio_data) / sample_rate,
-                file_path=audio_file.filename
+                file_path=audio_file.filename,
             )
-            
+
             # Add to database
             song_id = recognizer.database_manager.add_song(song, fingerprint)
-            
-            return {"success": True, "song_id": song_id, "message": "Song added successfully"}
-            
+
+            return {
+                "success": True,
+                "song_id": song_id,
+                "message": "Song added successfully",
+            }
+
         finally:
             # Clean up
             if os.path.exists(temp_file_path):
                 os.unlink(temp_file_path)
-                
+
     except Exception as e:
         logger.error(f"Error adding song: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -416,11 +418,11 @@ async def add_song_to_database(song_info: SongInfo, audio_file: UploadFile = Fil
 async def search_songs(query: str, field: str = "title"):
     """
     Search songs in database
-    
+
     Args:
         query: Search query
         field: Field to search in (title, artist, album)
-        
+
     Returns:
         List of matching songs
     """
@@ -435,10 +437,10 @@ async def search_songs(query: str, field: str = "title"):
                     "artist": song.artist,
                     "album": song.album,
                     "year": song.year,
-                    "duration": song.duration
+                    "duration": song.duration,
                 }
                 for song in songs
-            ]
+            ],
         }
     except Exception as e:
         logger.error(f"Error searching songs: {e}")
@@ -451,10 +453,11 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "MUZAM Audio Recognition API",
-        "version": "1.0.0"
+        "version": "1.0.0",
     }
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

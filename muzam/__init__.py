@@ -15,4 +15,9 @@ from .fingerprint.generator import FingerprintGenerator as AudioFingerprinter
 from .database.manager import DatabaseManager
 from .models import RecognitionResult
 
-__all__ = ["AudioRecognizer", "AudioFingerprinter", "DatabaseManager", "RecognitionResult"]
+__all__ = [
+    "AudioRecognizer",
+    "AudioFingerprinter",
+    "DatabaseManager",
+    "RecognitionResult",
+]

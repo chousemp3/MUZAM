@@ -21,24 +21,24 @@ def init_database():
     """Initialize the MUZAM database"""
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
-    
+
     try:
         logger.info("🎵 Initializing MUZAM database...")
-        
+
         # Create database manager (this will create tables)
         db_manager = DatabaseManager()
-        
+
         # Get initial stats
         stats = db_manager.get_database_size()
-        
+
         logger.info("✅ Database initialized successfully!")
         logger.info(f"📊 Database Statistics:")
         logger.info(f"   Songs: {stats['songs']}")
         logger.info(f"   Fingerprints: {stats['fingerprints']}")
         logger.info(f"   Recognitions: {stats['recognitions']}")
-        
+
         return True
-        
+
     except Exception as e:
         logger.error(f"❌ Error initializing database: {e}")
         return False

@@ -12,8 +12,10 @@ long_description = (this_directory / "README.md").read_text()
 
 # Read requirements
 requirements = []
-with open('requirements.txt') as f:
-    requirements = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+with open("requirements.txt") as f:
+    requirements = [
+        line.strip() for line in f if line.strip() and not line.startswith("#")
+    ]
 
 setup(
     name="muzam",
@@ -47,11 +49,17 @@ setup(
         "ml": ["scikit-learn>=1.0.0", "tensorflow>=2.13.0"],
         "dev": ["pytest>=7.0.0", "black>=23.0.0", "flake8>=6.0.0"],
         "all": [
-            "fastapi>=0.100.0", "uvicorn>=0.23.0", "jinja2>=3.1.0",
-            "click>=8.0.0", "rich>=13.0.0",
-            "scikit-learn>=1.0.0", "tensorflow>=2.13.0",
-            "pytest>=7.0.0", "black>=23.0.0", "flake8>=6.0.0"
-        ]
+            "fastapi>=0.100.0",
+            "uvicorn>=0.23.0",
+            "jinja2>=3.1.0",
+            "click>=8.0.0",
+            "rich>=13.0.0",
+            "scikit-learn>=1.0.0",
+            "tensorflow>=2.13.0",
+            "pytest>=7.0.0",
+            "black>=23.0.0",
+            "flake8>=6.0.0",
+        ],
     },
     entry_points={
         "console_scripts": [
@@ -69,8 +77,15 @@ setup(
         ],
     },
     keywords=[
-        "audio", "recognition", "music", "shazam", "fingerprinting",
-        "machine-learning", "open-source", "privacy", "local"
+        "audio",
+        "recognition",
+        "music",
+        "shazam",
+        "fingerprinting",
+        "machine-learning",
+        "open-source",
+        "privacy",
+        "local",
     ],
     project_urls={
         "Bug Reports": "https://github.com/muzam-project/muzam/issues",

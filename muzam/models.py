@@ -11,6 +11,7 @@ from typing import Optional, Dict
 @dataclass
 class RecognitionResult:
     """Result of audio recognition"""
+
     title: str
     artist: str
     album: Optional[str] = None
