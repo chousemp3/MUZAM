@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![MUZAM GhostKitty Interface](https://github.com/user-attachments/assets/your-screenshot-url-here)
+![MUZAM GhostKitty Interface](./assets/muzam-screenshot.png)
 
 **Open Source Audio Recognition • Better than Shazam**
 
