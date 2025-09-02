@@ -25,7 +25,7 @@ jobs:
     - name: 📦 Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y ffmpeg libsndfile1
+        sudo apt-get install -y ffmpeg libsndfile1 portaudio19-dev
     
     - name: 🔧 Install Python dependencies
       run: |
@@ -36,6 +36,7 @@ jobs:
     - name: 🧪 Run tests
       run: |
         python test_muzam.py
+        # Add proper pytest when available
         # pytest tests/ --cov=muzam --cov-report=xml
     
     - name: 📊 Upload coverage to Codecov
