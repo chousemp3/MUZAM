@@ -1,0 +1,30 @@
+name: 🎵 MUZAM Basic CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  basic-test:
+    name: ✅ Basic Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    
+    - name: 📦 Install basics
+      run: |
+        python -m pip install --upgrade pip
+        pip install numpy
+    
+    - name: ✅ Test Python works
+      run: |
+        python -c "print('✅ Python works!')"
+        python -c "import numpy; print('✅ NumPy works!')"
+        echo "✅ MUZAM CI is working!"
